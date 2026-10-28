@@ -1,0 +1,737 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Career Counseling</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:Arial,sans-serif;background:linear-gradient(135deg,#e9ffff,#f8ffff);color:#355b60;min-height:100vh}
+header{background:white;padding:18px 7%;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #cce9e7}
+.logo{font-size:28px;font-weight:bold;color:#239b99}
+nav button{border:0;background:white;color:#527176;font-weight:bold;padding:10px 14px;cursor:pointer;border-radius:10px}
+nav button:hover{background:#dcf6f4}
+.page{display:none;max-width:1100px;margin:auto;padding:50px 7%}
+.page.active{display:block}
+.card{background:white;border:1px solid #cce9e7;border-radius:22px;padding:30px;margin-top:25px;box-shadow:0 8px 25px rgba(50,120,120,.08)}
+h1{color:#238384;font-size:38px;margin-bottom:12px}
+h2{color:#287c7e;margin-bottom:15px}
+h3{color:#287c7e;margin:15px 0}
+p{line-height:1.7}
+input{width:100%;padding:14px;border:1px solid #b9dddd;border-radius:12px;margin:9px 0 15px;font-size:16px;outline:none}
+input:focus{border-color:#45b6b2}
+.main-btn{background:#45b6b2;color:white;border:0;border-radius:12px;padding:13px 22px;font-weight:bold;cursor:pointer;margin:5px}
+.main-btn:hover{background:#329c99}
+.option-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:18px}
+.option{border:1px solid #c5e5e3;background:white;border-radius:15px;padding:18px;cursor:pointer;color:#416d71;font-weight:bold}
+.option:hover,.option.selected{background:#dff7f5;border-color:#45b6b2}
+.hidden{display:none!important}
+.result{background:#effafa;border-radius:15px;padding:20px;margin-top:20px}
+.quiz-question{margin-top:22px;padding:20px;background:#f5ffff;border:1px solid #d2e9e7;border-radius:15px}
+.quiz-options{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
+.quiz-options button{border:1px solid #c4dfdd;background:white;border-radius:10px;padding:12px;cursor:pointer;text-align:left}
+.quiz-options button.selected{background:#d6f4f1;border-color:#45b6b2}
+.interest-list{display:flex;flex-wrap:wrap;gap:10px;margin-top:15px}
+.interest-tag{background:#dff7f5;padding:9px 14px;border-radius:20px}
+.chat-box{height:400px;overflow-y:auto;background:#f5ffff;border:1px solid #cde9e7;border-radius:17px;padding:18px;margin:20px 0}
+.message{max-width:85%;padding:14px 17px;border-radius:15px;margin:12px 0;line-height:1.65}
+.user-message{background:#d8f5f2;margin-left:auto}
+.counselor-message{background:white;border:1px solid #d3eae8}
+.chat-input{display:flex;gap:10px}
+.chat-input input{margin:0}
+.chat-input button{white-space:nowrap}
+.match-box{margin-top:25px;padding:25px;border-radius:18px;background:#e8faf8;text-align:center}
+.percent{font-size:34px;font-weight:bold;color:#238d8a}
+.saved-card{background:#f3ffff;border:1px solid #c9e5e3;border-radius:16px;padding:20px;margin-top:20px}
+footer{text-align:center;padding:25px;background:#dff5f3;margin-top:40px}
+@media(max-width:750px){
+header{flex-direction:column;gap:15px}
+.option-grid{grid-template-columns:1fr}
+.quiz-options{grid-template-columns:1fr}
+.chat-input{flex-direction:column}
+}
+</style>
+</head>
+
+<body>
+
+<header>
+<div class="logo">Career Counseling</div>
+<nav>
+<button onclick="showPage('home')">Home</button>
+<button onclick="showPage('careerPage')">Career</button>
+<button onclick="showPage('interestPage')">Interest</button>
+<button onclick="showPage('counselorChatPage')">Talk to AI Counselor</button>
+</nav>
+</header>
+
+<section id="home" class="page active">
+<h1>Career Counseling</h1>
+<p>Welcome to Career Counseling. Explore your interests and discover career areas that may suit you.</p>
+<div class="card">
+<h2>Login to Continue</h2>
+<label>Name</label>
+<input type="text" id="userName" placeholder="Enter your name">
+<label>Gmail / Email</label>
+<input type="email" id="userEmail" placeholder="Enter your Gmail or email">
+<button class="main-btn" onclick="login()">Login</button>
+<p id="loginMessage"></p>
+</div>
+</section>
+
+<section id="careerPage" class="page">
+<h1>Career Counseling</h1>
+<div class="card">
+<h2>What kind of career counselor do you want?</h2>
+<div class="option-grid">
+<button class="option" onclick="selectCounselor(this,'Strict')">Strict Counselor</button>
+<button class="option" onclick="selectCounselor(this,'Calm')">Calm Counselor</button>
+<button class="option" onclick="selectCounselor(this,'Friendly')">Friendly Counselor</button>
+</div>
+<div id="counselorChoice" class="result hidden"></div>
+</div>
+</section>
+
+<section id="moodPage" class="page">
+<h1>Your Mood</h1>
+<div class="card">
+<h2>How is your mood?</h2>
+<div class="option-grid">
+<button class="option" onclick="selectMood(this,'Happy')">Happy</button>
+<button class="option" onclick="selectMood(this,'Sad')">Sad</button>
+<button class="option" onclick="selectMood(this,'Confused')">Confused</button>
+<button class="option" onclick="selectMood(this,'Excited')">Excited</button>
+<button class="option" onclick="selectMood(this,'Worried')">Worried</button>
+<button class="option" onclick="selectMood(this,'Calm')">Calm</button>
+</div>
+<div id="moodResult"></div>
+</div>
+</section>
+
+<section id="interestPage" class="page">
+<h1>Your Interests</h1>
+<div class="card">
+
+<h2>Do you know your interest?</h2>
+
+<button class="main-btn" onclick="knowInterest()">I Know</button>
+<button class="main-btn" onclick="dontKnowInterest()">I Don't Know My Interest</button>
+
+<div id="knowSection" class="hidden">
+<h3>Write or choose your interests</h3>
+<input type="text" id="interestInput" placeholder="Example: computers, drawing, science...">
+<button class="main-btn" onclick="addInterest()">Add Interest</button>
+
+<div class="option-grid">
+<button class="option" onclick="chooseInterest('Computer')">Computer</button>
+<button class="option" onclick="chooseInterest('Arts')">Arts</button>
+<button class="option" onclick="chooseInterest('Science')">Science</button>
+<button class="option" onclick="chooseInterest('Mathematics')">Mathematics</button>
+<button class="option" onclick="chooseInterest('Business')">Business</button>
+<button class="option" onclick="chooseInterest('Engineering')">Engineering</button>
+</div>
+
+<div id="interestList" class="interest-list"></div>
+
+<button class="main-btn" onclick="showQuiz()">Want to take your interest quiz</button>
+</div>
+
+<div id="dontKnowSection" class="hidden">
+<div class="result">
+<h3>Let's find your interests!</h3>
+<p>Answer these 5 questions and choose the option that sounds most interesting to you.</p>
+</div>
+<div id="interestQuizQuestions"></div>
+<button class="main-btn" onclick="finishInterestQuiz()">Finish Interest Quiz</button>
+</div>
+
+<div id="quizArea" class="hidden">
+<h2>Interest Quiz</h2>
+<div id="quizQuestions"></div>
+<button class="main-btn" onclick="finishQuiz()">Finish Quiz</button>
+<div id="quizResult"></div>
+</div>
+
+<div id="talkButtonArea" class="hidden">
+<button class="main-btn" onclick="showPage('counselorChatPage')">Talk to AI Counselor</button>
+</div>
+
+<div id="matchResult"></div>
+
+<div id="saveArea" class="hidden">
+<button class="main-btn" onclick="saveCard()">Save Card</button>
+<div id="savedMessage"></div>
+</div>
+
+</div>
+</section>
+
+<section id="counselorChatPage" class="page">
+<h1>Talk to AI Counselor</h1>
+<div class="card">
+
+<div id="chatBox" class="chat-box">
+<div class="message counselor-message">
+<strong>Counselor:</strong><br>
+Hello! Ask me about careers, subjects, skills, interests or career choices.
+</div>
+</div>
+
+<div class="chat-input">
+<input type="text" id="questionInput" placeholder="Type your question here..." onkeydown="handleEnter(event)">
+<button class="main-btn" onclick="askCounselor()">Send</button>
+</div>
+
+<h3>Possible Questions</h3>
+
+<button class="option" onclick="quickQuestion('Why should I choose computer science?')">Why should I choose computer science?</button>
+<button class="option" onclick="quickQuestion('What careers combine computer and art?')">What careers combine computer and art?</button>
+<button class="option" onclick="quickQuestion('What skills do I need for software development?')">What skills do I need for software development?</button>
+<button class="option" onclick="quickQuestion('What subjects are useful for engineering?')">What subjects are useful for engineering?</button>
+<button class="option" onclick="quickQuestion('What career should I choose?')">What career should I choose?</button>
+
+</div>
+</section>
+
+<section id="savedPage" class="page">
+<h1>Your Career Card</h1>
+<div class="card">
+<div id="savedCardDisplay"></div>
+<br>
+<button class="main-btn" onclick="saveCard()">Save Card</button>
+<button class="main-btn" onclick="logout()">Log Out</button>
+</div>
+</section>
+
+<footer>Career Counseling</footer>
+
+<script>
+
+let currentUser="";
+let currentEmail="";
+let selectedCounselor="";
+let selectedMood="";
+let interests=[];
+let quizAnswers=[];
+let interestDiscoveryAnswers=[];
+let matchPercent=0;
+
+function login(){
+const name=document.getElementById("userName").value.trim();
+const email=document.getElementById("userEmail").value.trim();
+
+if(name===""||email===""){
+document.getElementById("loginMessage").innerHTML="Please enter your name and email.";
+return;
+}
+
+currentUser=name;
+currentEmail=email;
+
+localStorage.setItem("careerUser",JSON.stringify({name,email}));
+
+document.getElementById("loginMessage").innerHTML="Login successful!";
+
+setTimeout(()=>showPage("careerPage"),500);
+}
+
+function showPage(page){
+document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
+document.getElementById(page).classList.add("active");
+window.scrollTo({top:0,behavior:"smooth"});
+}
+
+function selectCounselor(button,type){
+selectedCounselor=type;
+
+document.querySelectorAll("#careerPage .option").forEach(b=>b.classList.remove("selected"));
+button.classList.add("selected");
+
+let message="";
+
+if(type==="Strict") message="Strict Counselor selected. You will receive direct and serious career guidance.";
+if(type==="Calm") message="Calm Counselor selected. You will receive balanced and clear career guidance.";
+if(type==="Friendly") message="Friendly Counselor selected. You will receive supportive and encouraging career guidance.";
+
+const box=document.getElementById("counselorChoice");
+box.classList.remove("hidden");
+box.innerHTML=message;
+
+setTimeout(()=>showPage("moodPage"),700);
+}
+
+function selectMood(button,mood){
+selectedMood=mood;
+
+document.querySelectorAll("#moodPage .option").forEach(b=>b.classList.remove("selected"));
+button.classList.add("selected");
+
+document.getElementById("moodResult").innerHTML=`
+<div class="result">
+<strong>Your mood:</strong> ${mood}<br><br>
+<button class="main-btn" onclick="showPage('interestPage')">Continue to Interests</button>
+</div>`;
+}
+
+function knowInterest(){
+document.getElementById("knowSection").classList.remove("hidden");
+document.getElementById("dontKnowSection").classList.add("hidden");
+document.getElementById("quizArea").classList.add("hidden");
+document.getElementById("talkButtonArea").classList.remove("hidden");
+}
+
+function dontKnowInterest(){
+document.getElementById("knowSection").classList.add("hidden");
+document.getElementById("dontKnowSection").classList.remove("hidden");
+document.getElementById("quizArea").classList.add("hidden");
+document.getElementById("talkButtonArea").classList.remove("hidden");
+createInterestDiscoveryQuiz();
+}
+
+function addInterest(){
+const input=document.getElementById("interestInput");
+const value=input.value.trim();
+
+if(value==="") return;
+
+if(!interests.includes(value)) interests.push(value);
+
+input.value="";
+displayInterests();
+}
+
+function chooseInterest(interest){
+if(!interests.includes(interest)) interests.push(interest);
+displayInterests();
+}
+
+function displayInterests(){
+const list=document.getElementById("interestList");
+list.innerHTML="";
+
+interests.forEach(interest=>{
+const tag=document.createElement("div");
+tag.className="interest-tag";
+tag.innerText=interest;
+list.appendChild(tag);
+});
+}
+
+const discoveryQuiz=[
+{
+q:"Which activity would you enjoy most?",
+a:["Creating a website or app","Drawing or designing","Doing a science experiment","Solving mathematical problems"]
+},
+{
+q:"What would you prefer to create?",
+a:["A computer program","An artwork","A scientific project","A business idea"]
+},
+{
+q:"Which subject sounds most interesting?",
+a:["Computer Science","Art and Design","Science","Mathematics"]
+},
+{
+q:"Which task sounds most enjoyable?",
+a:["Coding something new","Making a creative design","Researching how something works","Finding the solution to a difficult problem"]
+},
+{
+q:"Which future activity sounds best?",
+a:["Building technology","Creating visual content","Discovering new information","Working with numbers and logic"]
+}
+];
+
+function createInterestDiscoveryQuiz(){
+const container=document.getElementById("interestQuizQuestions");
+container.innerHTML="";
+interestDiscoveryAnswers=new Array(5).fill(null);
+
+discoveryQuiz.forEach((item,index)=>{
+let html=`<div class="quiz-question">
+<strong>${index+1}. ${item.q}</strong>
+<div class="quiz-options">`;
+
+item.a.forEach((answer,answerIndex)=>{
+html+=`<button id="d${index}_${answerIndex}" onclick="selectDiscoveryAnswer(${index},${answerIndex})">${answer}</button>`;
+});
+
+html+=`</div></div>`;
+container.innerHTML+=html;
+});
+}
+
+function selectDiscoveryAnswer(question,answer){
+interestDiscoveryAnswers[question]=answer;
+
+for(let i=0;i<4;i++){
+const button=document.getElementById(`d${question}_${i}`);
+if(button) button.classList.remove("selected");
+}
+
+document.getElementById(`d${question}_${answer}`).classList.add("selected");
+}
+
+function finishInterestQuiz(){
+
+if(interestDiscoveryAnswers.includes(null)){
+alert("Please answer all 5 questions.");
+return;
+}
+
+let counts={Computer:0,Arts:0,Science:0,Mathematics:0};
+
+interestDiscoveryAnswers.forEach(answer=>{
+if(answer===0) counts.Computer++;
+else if(answer===1) counts.Arts++;
+else if(answer===2) counts.Science++;
+else if(answer===3) counts.Mathematics++;
+});
+
+let sorted=Object.entries(counts).sort((a,b)=>b[1]-a[1]);
+
+let first=sorted[0][0];
+let second=sorted[1][0];
+
+interests=[first];
+
+if(second!==first) interests.push(second);
+
+matchPercent=Math.round((sorted[0][1]/5)*100);
+
+document.getElementById("dontKnowSection").innerHTML+=`
+<div class="match-box">
+<h3>Your Interest Result</h3>
+<p>Your strongest interest appears to be: <strong>${first}</strong></p>
+<p>Another area you may explore: <strong>${second}</strong></p>
+<div class="percent">${matchPercent}%</div>
+<p>Interest match based on your answers.</p>
+</div>`;
+
+document.getElementById("saveArea").classList.remove("hidden");
+saveTemporaryData();
+}
+
+const careerQuizzes={
+Computer:[
+{q:"Which language is commonly used for web development?",a:["HTML","Python","JavaScript","All of these"]},
+{q:"What does CPU stand for?",a:["Central Processing Unit","Computer Personal Unit","Control Program Utility","Central Program User"]},
+{q:"Which skill is useful in programming?",a:["Problem solving","Logical thinking","Practice","All of these"]}
+],
+Arts:[
+{q:"Which area is related to visual creativity?",a:["Graphic Design","Accounting","Physics","Chemistry"]},
+{q:"Which tool can be used for digital drawing?",a:["Drawing software","Calculator","Database","Compiler"]},
+{q:"Art can be combined with technology through:",a:["Digital Design","UI/UX","Animation","All of these"]}
+],
+Science:[
+{q:"What do scientists commonly do?",a:["Research","Experiment","Observe","All of these"]},
+{q:"Which subject studies living organisms?",a:["Biology","Physics","Mathematics","Computer Science"]},
+{q:"What is important in scientific research?",a:["Evidence","Observation","Testing","All of these"]}
+],
+Mathematics:[
+{q:"What is 12 × 5?",a:["50","60","70","80"]},
+{q:"Which area uses mathematical data?",a:["Statistics","Data Analysis","Economics","All of these"]},
+{q:"What is important in mathematics?",a:["Logic","Patterns","Problem solving","All of these"]}
+],
+Business:[
+{q:"Which area is part of business?",a:["Marketing","Management","Finance","All of these"]},
+{q:"What does marketing help a business do?",a:["Reach customers","Solve equations","Conduct experiments","Write code"]},
+{q:"Entrepreneurship involves:",a:["Creating business ideas","Learning only art","Only mathematics","None"]}
+],
+Engineering:[
+{q:"Engineering mainly involves:",a:["Design","Problem solving","Technology","All of these"]},
+{q:"Which field works with machines?",a:["Mechanical Engineering","Literature","History","Languages"]},
+{q:"Engineering often uses:",a:["Mathematics","Science","Technology","All of these"]}
+]
+};
+
+function showQuiz(){
+
+document.getElementById("quizArea").classList.remove("hidden");
+
+let type=interests.length>0?interests[0]:"Computer";
+
+if(!careerQuizzes[type]) type="Computer";
+
+quizAnswers=new Array(3).fill(null);
+
+const questions=document.getElementById("quizQuestions");
+questions.innerHTML="";
+
+careerQuizzes[type].forEach((item,index)=>{
+
+let html=`<div class="quiz-question">
+<strong>${index+1}. ${item.q}</strong>
+<div class="quiz-options">`;
+
+item.a.forEach((answer,answerIndex)=>{
+html+=`<button id="q${index}_${answerIndex}" onclick="selectQuizAnswer(${index},${answerIndex})">${answer}</button>`;
+});
+
+html+=`</div></div>`;
+questions.innerHTML+=html;
+});
+}
+
+function selectQuizAnswer(question,answer){
+
+quizAnswers[question]=answer;
+
+for(let i=0;i<4;i++){
+const button=document.getElementById(`q${question}_${i}`);
+if(button) button.classList.remove("selected");
+}
+
+document.getElementById(`q${question}_${answer}`).classList.add("selected");
+}
+
+function finishQuiz(){
+
+if(quizAnswers.includes(null)){
+alert("Please answer all 3 questions.");
+return;
+}
+
+let correct=0;
+
+quizAnswers.forEach(answer=>{
+if(answer===3) correct++;
+});
+
+matchPercent=Math.round((correct/3)*100);
+
+document.getElementById("quizResult").innerHTML=`
+<div class="match-box">
+<h3>Your Interest Match</h3>
+<div class="percent">${matchPercent}%</div>
+<p>Your interests match: <strong>${matchPercent}%</strong></p>
+<p>Your interests don't match: <strong>${100-matchPercent}%</strong></p>
+</div>`;
+
+document.getElementById("saveArea").classList.remove("hidden");
+document.getElementById("talkButtonArea").classList.remove("hidden");
+
+saveTemporaryData();
+}
+
+function saveTemporaryData(){
+
+const data={
+name:currentUser,
+email:currentEmail,
+counselor:selectedCounselor,
+mood:selectedMood,
+interests:interests,
+match:matchPercent
+};
+
+localStorage.setItem("careerCounselingCard",JSON.stringify(data));
+}
+
+function saveCard(){
+
+saveTemporaryData();
+
+const saved=JSON.parse(localStorage.getItem("careerCounselingCard"));
+
+document.getElementById("savedCardDisplay").innerHTML=`
+<div class="saved-card">
+<strong>Name:</strong> ${escapeHTML(saved.name||"")}<br><br>
+<strong>Email:</strong> ${escapeHTML(saved.email||"")}<br><br>
+<strong>Counselor:</strong> ${escapeHTML(saved.counselor||"")}<br><br>
+<strong>Mood:</strong> ${escapeHTML(saved.mood||"")}<br><br>
+<strong>Interests:</strong> ${escapeHTML((saved.interests||[]).join(", "))}<br><br>
+<strong>Interest Match:</strong> ${saved.match||0}%
+</div>`;
+
+document.getElementById("savedMessage").innerHTML=`
+<div class="saved-card"><strong>Saved successfully!</strong></div>`;
+
+showPage("savedPage");
+}
+
+function handleEnter(event){
+if(event.key==="Enter") askCounselor();
+}
+
+function quickQuestion(question){
+document.getElementById("questionInput").value=question;
+askCounselor();
+}
+
+function addCounselorMessage(type,text){
+
+const chat=document.getElementById("chatBox");
+const div=document.createElement("div");
+
+div.className="message "+(type==="user"?"user-message":"counselor-message");
+
+div.innerHTML="<strong>"+(type==="user"?"You:":"Counselor:")+"</strong><br>"+text;
+
+chat.appendChild(div);
+chat.scrollTop=chat.scrollHeight;
+}
+
+function askCounselor(){
+
+const input=document.getElementById("questionInput");
+const question=input.value.trim();
+
+if(question==="") return;
+
+addCounselorMessage("user",escapeHTML(question));
+
+input.value="";
+
+const answer=generateAnswer(question);
+
+setTimeout(()=>{
+addCounselorMessage("ai",answer);
+},400);
+}
+
+function generateAnswer(question){
+
+const q=question.toLowerCase();
+
+const short=q.includes("short")||q.includes("brief")||q.includes("2 lines")||q.includes("two lines");
+
+if(q.includes("computer")||q.includes("software")||q.includes("coding")){
+
+if(q.includes("why")||q.includes("choose")){
+return short
+?"Computer Science can suit people who enjoy technology and problem-solving. It can lead to many technology-related careers."
+:"Computer Science may suit someone who enjoys technology, logical thinking and problem-solving. It can lead to areas such as software development, web development, cybersecurity, data and other technology fields. Before choosing it, consider whether you enjoy learning technology and practicing problem-solving.";
+}
+
+if(q.includes("skill")){
+return short
+?"Useful skills include programming, logical thinking and problem-solving."
+:"Useful skills for computer-related careers include programming, logical thinking, problem-solving, communication and continuous learning. You can build these skills gradually through practice and small projects.";
+}
+
+return short
+?"Computer careers include software development, web development, cybersecurity and data-related fields."
+:"Computer-related careers include software development, web development, mobile development, cybersecurity, data analysis and many other technology areas. The right area depends on the type of technology and work you enjoy.";
+}
+
+if((q.includes("art")||q.includes("drawing"))&&(q.includes("computer")||q.includes("technology"))){
+return short
+?"Computer and Art can combine in UI/UX design, game design, animation and creative web design."
+:"Computer and Art can be combined in areas such as UI/UX design, game design, animation, digital art and creative web design. These fields can involve both technical and creative skills, so they may be worth exploring if you enjoy both technology and creativity.";
+}
+
+if(q.includes("art")||q.includes("drawing")||q.includes("design")){
+return short
+?"Art can lead to graphic design, illustration, animation, digital art and UI/UX design."
+:"Art can lead to areas such as graphic design, illustration, animation, digital art and UI/UX design. You can explore different creative areas and see which type of work you enjoy most.";
+}
+
+if(q.includes("math")||q.includes("mathematics")){
+return short
+?"Mathematics can support careers in statistics, data analysis, engineering, economics and research."
+:"Mathematics can support many career areas, including statistics, data analysis, engineering, economics and scientific research. If you enjoy numbers, patterns and logical problem-solving, mathematics-related fields may be useful areas to explore.";
+}
+
+if(q.includes("physics")||q.includes("engineering")){
+return short
+?"Physics and Engineering involve mathematics, problem-solving and understanding how systems work."
+:"Physics and Engineering can connect to mechanical systems, electrical systems, technology, research and scientific applications. These areas commonly involve mathematics, problem-solving and understanding how physical systems work.";
+}
+
+if(q.includes("english")||q.includes("writing")||q.includes("grammar")){
+return short
+?"English can lead to writing, journalism, teaching, editing and communication careers."
+:"English can support careers involving writing, editing, journalism, teaching, publishing and communication. Strong reading, writing, grammar and communication skills can be useful across many career areas.";
+}
+
+if(q.includes("business")||q.includes("marketing")){
+return short
+?"Business can lead to marketing, management, finance, business analysis and entrepreneurship."
+:"Business includes areas such as marketing, management, finance, business analysis and entrepreneurship. Your interests and strengths can help you decide which part of business you would like to explore.";
+}
+
+if(q.includes("interest")||q.includes("career should")||q.includes("choose")){
+
+if(interests.length>0){
+return short
+?"Your selected interests are "+interests.join(", ")+". Explore careers connected to these areas."
+:"Your selected interests are "+interests.join(", ")+". They can be a starting point for exploring careers. Compare the skills required, subjects involved and type of work before making your decision.";
+}
+
+return short
+?"Start by listing the subjects and activities you enjoy most."
+:"Start by listing the subjects, activities and skills you enjoy. Then explore careers connected with those interests. You can also use the Interest Quiz on this website to compare different areas.";
+}
+
+if(q.includes("confused")||q.includes("don't know")||q.includes("dont know")){
+return short
+?"It is okay to be confused. Explore a few interests and try small activities before choosing."
+:"It is okay to be unsure about your career. You do not need to decide everything immediately. Start with a few areas that interest you, try small activities related to them and compare what you enjoy and what you would like to learn more about.";
+}
+
+if(q.includes("study")||q.includes("subject")){
+return short
+?"The subjects you need depend on the career and education program you choose."
+:"The subjects you need depend on the career and education program you want to study. A useful step is to choose a career area and then check the subjects and admission requirements for the schools or universities you are considering.";
+}
+
+if(q.includes("hello")||q.includes("hi")||q.includes("hey")){
+return short
+?"Hello! How can I help you with your career?"
+:"Hello! I am your Career Counselor. You can ask me about careers, interests, subjects, skills, education or combining different interests.";
+}
+
+return short
+?"I can help with career and interest questions. Ask me about a specific career."
+:"I can help with career-related questions about interests, subjects, skills, education and different career areas. Try asking me about a specific career or tell me which subjects and activities you enjoy.";
+}
+
+function escapeHTML(text){
+return String(text)
+.replace(/&/g,"&amp;")
+.replace(/</g,"&lt;")
+.replace(/>/g,"&gt;")
+.replace(/"/g,"&quot;")
+.replace(/'/g,"&#039;");
+}
+
+function logout(){
+
+localStorage.removeItem("careerUser");
+
+currentUser="";
+currentEmail="";
+selectedCounselor="";
+selectedMood="";
+interests=[];
+matchPercent=0;
+
+document.getElementById("userName").value="";
+document.getElementById("userEmail").value="";
+
+showPage("home");
+}
+
+window.onload=function(){
+
+const savedUser=localStorage.getItem("careerUser");
+
+if(savedUser){
+const user=JSON.parse(savedUser);
+currentUser=user.name;
+currentEmail=user.email;
+}
+
+const savedCard=localStorage.getItem("careerCounselingCard");
+
+if(savedCard){
+const data=JSON.parse(savedCard);
+
+if(data.interests) interests=data.interests;
+if(data.match) matchPercent=data.match;
+}
+};
+
+</script>
+
+</body>
+</html>
